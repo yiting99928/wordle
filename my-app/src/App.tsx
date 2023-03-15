@@ -19,7 +19,7 @@ function App() {
   const inputRefs = useRef<any>([[]]);
 
   useEffect(() => {
-    inputRefs.current[0][0]?.focus();
+    inputRefs.current[0][0].focus();
   }, []);
 
   function handleInputChange(i: number, j: number, input: string, e: any) {
@@ -30,24 +30,20 @@ function App() {
     }
     newData[i][j] = { letter, status: 'active' };
     setAllInputData(newData);
+    if (j < 4) {
+      inputRefs.current[i][j + 1].focus();
+    }
     if (
       e.key === 'Enter' &&
       j === 4 &&
       allInputData[i].every((item) => item.letter !== '')
     ) {
       setCurrentRow((row) => (row += 1));
-      inputRefs.current[i === 5 ? i : i + 1][0]?.focus();
+      inputRefs.current[i === 5 ? i : i + 1][0].focus();
       checkAnswer(i, j);
     }
-    if (j < 4) {
-      inputRefs.current[i][j + 1]?.focus();
-    }
     if (e.key === 'Backspace') {
-      if (j > 0) {
-        inputRefs.current[i][j - 1].focus();
-      } else {
-        inputRefs.current[i][0].focus();
-      }
+      inputRefs.current[i][j > 0 ? j - 1 : 0].focus();
       const newData = [...allInputData];
       setAllInputData(newData);
       newData[i][j] = { letter: '', status: '' };
