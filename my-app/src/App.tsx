@@ -15,6 +15,7 @@ function App() {
   //   return table;
   // }
   const answer: string[] = ['I', 'N', 'P', 'U', 'T'];
+  const [currentRow, setCurrentRow] = useState(0);
   const stateClassName: { [key: string]: string } = {
     gray: 'text-white border-[#787c7e] bg-[#787c7e]',
     green: 'text-white bg-[#6aaa64] border-[#6aaa64]',
@@ -75,7 +76,7 @@ function App() {
   function handleInputChange(i: number, j: number, input: string, e: any) {
     const newData = [...allInputData];
     const letter = input.trim().toUpperCase();
-    if (letter.length !== 1 || !/^[A-Z]$/.test(letter)) {
+    if (letter.length !== 1 || (!/^[A-Z]$/.test(letter) && i !== currentRow)) {
       return;
     }
     newData[i][j] = { letter, status: 'active' };
@@ -85,6 +86,7 @@ function App() {
       j === 4 &&
       allInputData[i].every((item) => item.letter !== '')
     ) {
+      setCurrentRow((row) => (row += 1));
       if (i === allInputData.length - 1) {
         // 如果是最後一列
         checkAnswer(i, j);
@@ -100,11 +102,11 @@ function App() {
       if (j > 0) {
         inputRefs.current[i][j - 1].focus();
         console.log(1);
-      } else if (j === 0 && i > 0) {
-        inputRefs.current[i - 1][4].focus();
+      } else {
+        inputRefs.current[i][0].focus();
         console.log(2);
       }
-      console.log('退!');
+      console.log(3);
       const newData = [...allInputData];
       setAllInputData(newData);
       newData[i][j] = { letter: '', status: '' };
@@ -126,17 +128,9 @@ function App() {
     setAllInputData([...allInputData]);
   }
 
-  // function delAnswers(i: number, j: number) {
-  //   const newData = [...allInputData];
-  //   newData[i][j] = { letter: '', status: '' };
-  //   newData[i][j - 1] = { letter: '', status: 'active' };
-  //   setAllInputData(newData);
-  //   if (j > 0) {
-  //     inputRefs.current[i][j - 1].focus();
-  //   }
-  // }
-
+  console.log(currentRow);
   console.log(allInputData);
+  console.log(allInputData[currentRow]);
   return (
     <div className="box-border ">
       <div className="text-3xl text-center flex justify-center items-center h-20 border-b border-gray-600">
@@ -159,10 +153,22 @@ function App() {
                   }
                   inputRefs.current[i][j] = el;
                 }}
-                onChange={(e) => handleInputChange(i, j, e.target.value, e)}
-                onKeyDown={(e) =>
-                  handleInputChange(i, j, allInputData[i][j].letter, e)
-                }
+                onChange={(e) => {
+                  if (
+                    (i === currentRow && i === 0) ||
+                    (i === currentRow &&
+                      allInputData[i - 1].every(
+                        (item) => item.status !== 'green'
+                      ))
+                  ) {
+                    handleInputChange(i, j, e.target.value, e);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (i === currentRow) {
+                    handleInputChange(i, j, allInputData[i][j].letter, e);
+                  }
+                }}
               />
             ))}
           </div>
