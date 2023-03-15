@@ -1,9 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 function App() {
-  // const inputValue = ['M', 'A', 'G', 'B', 'B'];
-  // const currentRow:number = 1;
-  // const state:string[] = ['gray', 'green', 'yellow', 'active'];
   // const allInputData = table(6, 5);
   // const [inputData, setInputData] = useState(allInputData);
   // function table(colLength: number, rowLength: number) {
@@ -75,7 +72,7 @@ function App() {
     inputRefs.current[0][0]?.focus();
   }, []);
 
-  const handleInputChange = (i: number, j: number, input: string, e) => {
+  function handleInputChange(i: number, j: number, input: string, e: any) {
     const newData = [...allInputData];
     const letter = input.trim().toUpperCase();
     if (letter.length !== 1 || !/^[A-Z]$/.test(letter)) {
@@ -83,18 +80,38 @@ function App() {
     }
     newData[i][j] = { letter, status: 'active' };
     setAllInputData(newData);
-    if (e.keyCode === 8 || e.keyCode === 46) {
-      console.log('刪除');
-    }
-    if (e.key === 'Enter' && j === 4) {
-      inputRefs.current[i + 1][0]?.focus();
-      compareAnswers(i, j);
+    if (
+      e.key === 'Enter' &&
+      j === 4 &&
+      allInputData[i].every((item) => item.letter !== '')
+    ) {
+      if (i === allInputData.length - 1) {
+        // 如果是最後一列
+        checkAnswer(i, j);
+      } else {
+        // 如果不是最後一列
+        inputRefs.current[i + 1][0]?.focus();
+        checkAnswer(i, j);
+      }
     } else if (j < 4) {
       inputRefs.current[i][j + 1]?.focus();
     }
-  };
+    if (e.key === 'Backspace') {
+      if (j > 0) {
+        inputRefs.current[i][j - 1].focus();
+        console.log(1);
+      } else if (j === 0 && i > 0) {
+        inputRefs.current[i - 1][4].focus();
+        console.log(2);
+      }
+      console.log('退!');
+      const newData = [...allInputData];
+      setAllInputData(newData);
+      newData[i][j] = { letter: '', status: '' };
+    }
+  }
 
-  const compareAnswers = (i: number, j: number) => {
+  function checkAnswer(i: number, j: number) {
     const currentInputData = allInputData[i];
     const currentAnswer = answer.slice(0, currentInputData.length);
     for (let k = 0; k < currentInputData.length; k++) {
@@ -107,7 +124,17 @@ function App() {
       }
     }
     setAllInputData([...allInputData]);
-  };
+  }
+
+  // function delAnswers(i: number, j: number) {
+  //   const newData = [...allInputData];
+  //   newData[i][j] = { letter: '', status: '' };
+  //   newData[i][j - 1] = { letter: '', status: 'active' };
+  //   setAllInputData(newData);
+  //   if (j > 0) {
+  //     inputRefs.current[i][j - 1].focus();
+  //   }
+  // }
 
   console.log(allInputData);
   return (
