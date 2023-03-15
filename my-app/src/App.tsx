@@ -1,19 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 function App() {
-  // const allInputData = table(6, 5);
-  // const [inputData, setInputData] = useState(allInputData);
-  // function table(colLength: number, rowLength: number) {
-  //   const col = [];
-  //   for (let i = 0; i < rowLength; i++) {
-  //     col.push({ letter: '', status: '' });
-  //   }
-  //   const table = [];
-  //   for (let i = 0; i < colLength; i++) {
-  //     table.push(col);
-  //   }
-  //   return table;
-  // }
   const answer: string[] = ['I', 'N', 'P', 'U', 'T'];
   const [currentRow, setCurrentRow] = useState(0);
   const stateClassName: { [key: string]: string } = {
@@ -23,51 +10,13 @@ function App() {
     active: 'bg-white border-black',
   };
 
-  const [allInputData, setAllInputData] = useState([
-    [
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-    ],
-    [
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-    ],
-    [
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-    ],
-    [
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-    ],
-    [
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-    ],
-    [
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-      { letter: '', status: '' },
-    ],
-  ]);
-  const inputRefs = useRef<(HTMLInputElement | null)[][]>([[]]);
+  type InputData = { letter: string; status: string };
+  const [allInputData, setAllInputData] = useState<InputData[][]>(
+    Array.from({ length: 6 }).map(() =>
+      Array.from({ length: 5 }).fill({ letter: '', status: '' })
+    ) as InputData[][]
+  );
+  const inputRefs = useRef<any>([[]]);
 
   useEffect(() => {
     inputRefs.current[0][0]?.focus();
@@ -87,26 +36,18 @@ function App() {
       allInputData[i].every((item) => item.letter !== '')
     ) {
       setCurrentRow((row) => (row += 1));
-      if (i === allInputData.length - 1) {
-        // 如果是最後一列
-        checkAnswer(i, j);
-      } else {
-        // 如果不是最後一列
-        inputRefs.current[i + 1][0]?.focus();
-        checkAnswer(i, j);
-      }
-    } else if (j < 4) {
+      inputRefs.current[i === 5 ? i : i + 1][0]?.focus();
+      checkAnswer(i, j);
+    }
+    if (j < 4) {
       inputRefs.current[i][j + 1]?.focus();
     }
     if (e.key === 'Backspace') {
       if (j > 0) {
         inputRefs.current[i][j - 1].focus();
-        console.log(1);
       } else {
         inputRefs.current[i][0].focus();
-        console.log(2);
       }
-      console.log(3);
       const newData = [...allInputData];
       setAllInputData(newData);
       newData[i][j] = { letter: '', status: '' };
@@ -128,9 +69,6 @@ function App() {
     setAllInputData([...allInputData]);
   }
 
-  console.log(currentRow);
-  console.log(allInputData);
-  console.log(allInputData[currentRow]);
   return (
     <div className="box-border ">
       <div className="text-3xl text-center flex justify-center items-center h-20 border-b border-gray-600">
@@ -157,8 +95,9 @@ function App() {
                   if (
                     (i === currentRow && i === 0) ||
                     (i === currentRow &&
-                      allInputData[i - 1].every(
-                        (item) => item.status !== 'green'
+                      i > 0 &&
+                      !allInputData[i - 1].every(
+                        (item) => item.status === 'green'
                       ))
                   ) {
                     handleInputChange(i, j, e.target.value, e);
