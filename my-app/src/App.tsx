@@ -73,15 +73,15 @@ function App() {
 
   function handleInputChange(i: number, j: number, e: any) {
     const newValue = e.target.value;
-    // setInputData((prev) => {
-    //   const newInputData = [...prev];
-    //   console.log(newInputData);
-    //   newInputData[i][j] = {
-    //     ...newInputData[i][j],
-    //     letter: newValue,
-    //   };
-    //   return newInputData;
-    // });
+    setInputData((prev) => {
+      const newInputData = [...prev];
+      console.log(newInputData);
+      newInputData[i][j] = {
+        ...newInputData[i][j],
+        letter: newValue,
+      };
+      return newInputData;
+    });
   }
 
   console.log(inputData);
