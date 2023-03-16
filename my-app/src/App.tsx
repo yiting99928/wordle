@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+type InputData = { letter: string; status: string };
 function App() {
   const answer: string[] = ['I', 'N', 'P', 'U', 'T'];
   const [currentRow, setCurrentRow] = useState(0);
@@ -10,7 +11,6 @@ function App() {
     active: 'bg-white border-black',
   };
 
-  type InputData = { letter: string; status: string };
   const [allInputData, setAllInputData] = useState<InputData[][]>(
     Array.from({ length: 6 }).map(() =>
       Array.from({ length: 5 }).fill({ letter: '', status: '' })
@@ -90,12 +90,13 @@ function App() {
                   inputRefs.current[i][j] = el;
                 }}
                 onChange={(e) => {
+                  const isCurrentRowFirst = i === currentRow && i === 0;
+                  const isCurrentRowNonFirst = i === currentRow && i > 0;
                   if (
-                    (i === currentRow && i === 0) ||
-                    (i === currentRow &&
-                      i > 0 &&
-                      !allInputData[i - 1].every(
-                        (item) => item.status === 'green'
+                    isCurrentRowFirst ||
+                    (isCurrentRowNonFirst &&
+                      allInputData[i - 1].some(
+                        (item) => item.status !== 'green'
                       ))
                   ) {
                     handleInputChange(i, j, e.target.value, e);
