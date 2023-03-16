@@ -25,7 +25,9 @@ function App() {
   function handleInputChange(i: number, j: number, input: string, e: any) {
     const newData = [...allInputData];
     const letter = input.trim().toUpperCase();
-    if (letter.length !== 1 || (!/^[A-Z]$/.test(letter) && i !== currentRow)) {
+    const bopomofoRegex =
+      /^[\u3105-\u3129\u02D9\u02CA\u02C7\u02CB\u311A-\u3120\u31A0-\u31BA]+$/;
+    if (letter.length !== 1 || bopomofoRegex.test(letter)) {
       return;
     }
     newData[i][j] = { letter, status: 'active' };
