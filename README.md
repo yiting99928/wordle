@@ -1,6 +1,6 @@
 # Wordle
 [Yumy's Wordle](https://wordle-50f37.web.app/)<br>
-Cloned the popular word-guessing game within two days.) is cloned the popular word-guessing game within two days.
+Cloned the popular word-guessing game within two days.
 
 ### Demo
 ![video](https://github.com/yiting99928/wordle/assets/119116127/b8530c0b-42a9-482c-912f-45ded2bfbeca)
